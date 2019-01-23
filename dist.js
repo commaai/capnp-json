@@ -68,6 +68,8 @@ function assignGetter(data, name, capnpObject, method) {
           // just tostring all 64 bit ints
           value = value.toString();
           break;
+        case 'Pointer':
+          break;
         default:
           value = toJSON(value);
           break;
