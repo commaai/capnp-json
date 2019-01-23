@@ -1,8 +1,8 @@
 {
-  "name": "capnp-json",
+  "name": "@commaai/capnp-json",
   "version": "0.1.3",
   "main": "index.js",
-  "repository": "git@github.com:chrisinajar/capnp-json.git",
+  "repository": "git@github.com:commaai/capnp-json.git",
   "author": "Chris Vickery <chrisinajar@gmail.com>",
   "license": "MIT",
   "scripts": {
