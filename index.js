@@ -63,6 +63,9 @@ function assignGetter(data, name, capnpObject, method) {
           // just tostring all 64 bit ints
           value = value.toString();
           break;
+        case 'Data':
+          value = Buffer.from(value.toUint8Array()).toString('base64')
+          break;
         case 'Pointer':
           try {
             value = capnp.Text.fromPointer(value).get()
