@@ -1,4 +1,4 @@
-
+var capnp = require('capnp-ts')
 module.exports = toJSON;
 
 function toJSON (capnpObject, struct) {
@@ -43,7 +43,6 @@ function toJSON (capnpObject, struct) {
       assignGetter(data, name, capnpObject, method);
       unionName = name;
       unionCapsName = capsName;
-
     } else if (struct[capsName] === undefined) {
       assignGetter(data, name, capnpObject, method);
     }
@@ -65,6 +64,11 @@ function assignGetter(data, name, capnpObject, method) {
           value = value.toString();
           break;
         case 'Pointer':
+          try {
+            value = capnp.Text.fromPointer(value).get()
+          } catch(err) {
+            value = undefined;
+          }
           break;
         default:
           value = toJSON(value);
