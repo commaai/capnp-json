@@ -40,13 +40,12 @@ function toJSON (capnpObject, struct) {
       capsName += name[i].toUpperCase();
     }
 
-    var camelName = name[0].toLowerCase() + name.substr(1);
     if (which === struct[capsName]) {
-      assignGetter(data, camelName, capnpObject, method);
+      assignGetter(data, name, capnpObject, method);
       unionName = name;
       unionCapsName = capsName;
     } else if (struct[capsName] === undefined) {
-      assignGetter(data, camelName, capnpObject, method);
+      assignGetter(data, name, capnpObject, method);
     }
   });
 
