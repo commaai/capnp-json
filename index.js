@@ -19,7 +19,8 @@ function toJSON (capnpObject, struct) {
 
   let data = {};
 
-  Object.keys(capnpObject.constructor.prototype).forEach(function (method) {
+  const proto = Object.getPrototypeOf(capnpObject)
+  Object.getOwnPropertyNames(proto).forEach(function (method) {
     if (!method.startsWith('get')) {
       return;
     }

@@ -2,6 +2,7 @@
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
+var capnp = require('capnp-ts');
 module.exports = toJSON;
 
 function toJSON(capnpObject, struct) {
@@ -24,7 +25,8 @@ function toJSON(capnpObject, struct) {
 
   var data = {};
 
-  Object.keys(capnpObject.constructor.prototype).forEach(function (method) {
+  var proto = Object.getPrototypeOf(capnpObject);
+  Object.getOwnPropertyNames(proto).forEach(function (method) {
     if (!method.startsWith('get')) {
       return;
     }
@@ -44,12 +46,13 @@ function toJSON(capnpObject, struct) {
       capsName += name[i].toUpperCase();
     }
 
+    var camelName = name[0].toLowerCase() + name.substr(1);
     if (which === struct[capsName]) {
-      assignGetter(data, name, capnpObject, method);
+      assignGetter(data, camelName, capnpObject, method);
       unionName = name;
       unionCapsName = capsName;
     } else if (struct[capsName] === undefined) {
-      assignGetter(data, name, capnpObject, method);
+      assignGetter(data, camelName, capnpObject, method);
     }
   });
 
@@ -68,7 +71,15 @@ function assignGetter(data, name, capnpObject, method) {
           // just tostring all 64 bit ints
           value = value.toString();
           break;
+        case 'Data':
+          value = Buffer.from(value.toUint8Array()).toString('base64');
+          break;
         case 'Pointer':
+          try {
+            value = capnp.Text.fromPointer(value).get();
+          } catch (err) {
+            value = undefined;
+          }
           break;
         default:
           value = toJSON(value);
