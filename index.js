@@ -69,7 +69,11 @@ function assignGetter(data, name, capnpObject, method) {
           break;
         case 'Pointer':
           try {
-            value = capnp.Text.fromPointer(value).get()
+            let dataArr = capnp.Data.fromPointer(value).toUint8Array();
+            if (dataArr[dataArr.length - 1] === 0) {  // exclude null terminator if present
+              dataArr = dataArr.subarray(0, dataArr.length - 1);
+            }
+            value = new TextDecoder().decode(dataArr);
           } catch(err) {
             value = undefined;
           }
